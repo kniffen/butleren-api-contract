@@ -18,16 +18,12 @@ tags:
     description: Twitch integration and management
   - name: Kick
     description: Kick integration and management
-  - name: YouTube
-    description: YouTube integration and management
-  - name: Spotify
-    description: Spotify integration and management
 
 paths:
   # Discord
   /api/discord/guilds:
     get:
-      summary: Get all guilds  
+      summary: Get all guilds
       tags:
         - Discord
       responses:
@@ -110,33 +106,20 @@ paths:
           description: Internal server error
 
   # Users
-  /api/user/settings:
+  /api/users:
     get:
-      summary: Get user settings
+      summary: Get list of users
       tags:
         - Users
       responses:
         '200':
-          description: The user settings
+          description: The users list
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserSettings"
-        '500':
-          description: Internal server error
-    put:
-      summary: Update user settings
-      tags:
-        - Users
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/UserSettings"
-      responses:
-        '204':
-          description: User settings updated
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
         '500':
           description: Internal server error
   # Modules
@@ -404,8 +387,10 @@ paths:
   # Spotify
 components:
   schemas:
+    User:
+      $ref: "./components/users/User.yml#/User"
     UserSettings:
-      $ref: "./components/UserSettings.yml#/UserSettings"
+      $ref: "./components/users/UserSettings.yml#/UserSettings"
     Module:
       $ref: "./components/Module.yml#/Module"
     ModuleDatabaseEntry:

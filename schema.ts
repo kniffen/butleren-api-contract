@@ -40,8 +40,12 @@ const ChatRequestBody = z
   .object({ message: z.string() })
   .strict()
   .passthrough();
-const UserSettings = z
-  .object({ location: z.string().optional() })
+const User = z
+  .object({
+    id: z.string(),
+    displayName: z.string(),
+    location: z.string().optional(),
+  })
   .strict()
   .passthrough();
 const ModuleSettings = z
@@ -149,6 +153,11 @@ const KickSearchResultItem = z
   })
   .strict()
   .passthrough();
+const UserSettings = z
+  .object({ location: z.string() })
+  .partial()
+  .strict()
+  .passthrough();
 const ModuleDatabaseEntry = z
   .object({ guildId: z.string(), slug: z.string(), settings: z.string() })
   .strict()
@@ -167,7 +176,7 @@ export const schemas = {
   GuildSettings,
   Guild,
   ChatRequestBody,
-  UserSettings,
+  User,
   ModuleSettings,
   Module,
   LogEntry,
@@ -177,6 +186,7 @@ export const schemas = {
   KickChannel,
   KickChannelRequestBody,
   KickSearchResultItem,
+  UserSettings,
   ModuleDatabaseEntry,
   KickChannelDatabaseEntry,
 };
@@ -600,37 +610,10 @@ const endpoints = makeApi([
   },
   {
     method: "get",
-    path: "/api/user/settings",
-    alias: "getApiusersettings",
+    path: "/api/users",
+    alias: "getApiusers",
     requestFormat: "json",
-    response: z
-      .object({ location: z.string().optional() })
-      .strict()
-      .passthrough(),
-    errors: [
-      {
-        status: 500,
-        description: `Internal server error`,
-        schema: z.void(),
-      },
-    ],
-  },
-  {
-    method: "put",
-    path: "/api/user/settings",
-    alias: "putApiusersettings",
-    requestFormat: "json",
-    parameters: [
-      {
-        name: "body",
-        type: "Body",
-        schema: z
-          .object({ location: z.string().optional() })
-          .strict()
-          .passthrough(),
-      },
-    ],
-    response: z.void(),
+    response: z.array(User),
     errors: [
       {
         status: 500,

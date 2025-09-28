@@ -5,5 +5,3 @@ UserSettings:
       type: string
       description: The user's location
       example: "Germany"
-  required:
-    - id
