@@ -1,0 +1,441 @@
+openapi: "3.0.2"
+info:
+  title: Butleren API
+  version: 1.0.0
+  description: |
+    Butleren API is a RESTful API that provides access to Butleren's services.
+
+tags:
+  - name: Discord
+    description: Discord guild management operations
+  - name: Users
+    description: User settings and preferences
+  - name: Logging
+    description: Log entry retrieval and management
+  - name: Modules
+    description: Module configuration and settings
+  - name: Twitch
+    description: Twitch integration and management
+  - name: Kick
+    description: Kick integration and management
+  - name: YouTube
+    description: YouTube integration and management
+  - name: Spotify
+    description: Spotify integration and management
+
+paths:
+  # Discord
+  /api/discord/guilds:
+    get:
+      summary: Get all guilds  
+      tags:
+        - Discord
+      responses:
+        '200':
+          description: A list of guilds
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Guild"
+        '500':
+          description: Internal server error
+  /api/discord/guilds/{guildId}:
+    get:
+      summary: Get a guild by id
+      tags:
+        - Discord
+      parameters:
+        - $ref: "#/components/parameters/DiscordGuildId"
+      responses:
+        '200':
+          description: A guild
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Guild"
+        '404':
+          description: Guild not found
+        '500':
+          description: Internal server error
+  /api/discord/guilds/{guildId}/settings:
+    put:
+      summary: Update a guild's settings
+      tags:
+        - Discord
+      parameters:
+        - name: guild
+          example: "123456789012345678"
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The guild's discord id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GuildSettings"
+      responses:
+        '204':
+          description: Guild settings updated
+        '404':
+          description: Guild not found
+        '500':
+          description: Internal server error
+  /api/discord/{channelId}/chat:
+    post:
+      summary: Send a message to a channel
+      tags:
+        - Discord
+      parameters:
+        - $ref: "#/components/parameters/DiscordChannelId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: "#/components/schemas/ChatRequestBody"
+      responses:
+        '204':
+          description: Message sent
+        '400':
+          description: Bad request
+        '404':
+          description: Channel not found
+        '500':
+          description: Internal server error
+
+  # Users
+  /api/user/settings:
+    get:
+      summary: Get user settings
+      tags:
+        - Users
+      responses:
+        '200':
+          description: The user settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserSettings"
+        '500':
+          description: Internal server error
+    put:
+      summary: Update user settings
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserSettings"
+      responses:
+        '204':
+          description: User settings updated
+        '500':
+          description: Internal server error
+  # Modules
+  /api/modules/{guildId}:
+    get:
+      summary: Get all modules
+      tags:
+        - Modules
+      parameters:
+        - $ref: "#/components/parameters/DiscordGuildId"
+      responses:
+        '200':
+          description: A list of modules
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Module"
+        '500':
+          description: Internal server error
+  /api/modules/{guildId}/{slug}/settings:
+    put:
+      summary: Update a module's settings
+      tags:
+        - Modules
+      parameters:
+        - $ref: "#/components/parameters/DiscordGuildId"
+        - name: slug
+          example: "foo"
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The module slug
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ModuleSettings"
+      responses:
+        '204':
+          description: Module settings updated
+        '404':
+          description: Module not found
+        '500':
+          description: Internal server error
+
+  # Logger
+  /api/logger/entries:
+    get:
+      summary: Get log entries
+      tags:
+        - Logging
+      parameters:
+        - name: date
+          example: "2023-10-01"
+          in: query
+          required: true
+          schema:
+            type: string
+          description: The date to filter logs by (YYYY-MM-DD)
+      responses:
+        '200':
+          description: A list of logs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LogEntry"
+
+  # Twitch
+  /api/modules/twitch/{guildId}/channels:
+    get:
+      summary: Get all Twitch channels for a guild
+      tags:
+        - Twitch
+      parameters:
+        - $ref: "#/components/parameters/DiscordGuildId"
+      responses:
+        '200':
+          description: A list of Twitch channels
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TwitchChannel"
+        '500':
+          description: Internal server error
+    post:
+      summary: Add a Twitch channel to a guild
+      tags:
+        - Twitch
+      parameters:
+        - $ref: "#/components/parameters/DiscordGuildId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TwitchChannelRequestBody"
+      responses:
+        '201':
+          description: Twitch channel added
+        '400':
+          description: Bad request
+        '404':
+          description: Channel not found'
+        '500':
+          description: Internal server error
+  /api/modules/twitch/{guildId}/channels/search:
+    get:
+      summary: Search for Twitch channels
+      tags:
+        - Twitch
+      parameters:
+        - $ref: "#/components/parameters/DiscordGuildId"
+        - name: query
+          example: "foobar"
+          in: query
+          required: true
+          schema:
+            type: string
+          description: The search query
+        - name: type
+          example: "channels"
+          in: query
+          required: true
+          schema:
+            type: string
+            enum:
+              - channels
+          description: The type of search
+      responses:
+        '200':
+          description: A list of Twitch channels matching the search query
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TwitchSearchResultItem"
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+
+  /api/modules/twitch/{guildId}/channels/{channelId}:
+    delete:
+      summary: Remove a Twitch channel from a guild
+      tags:
+        - Twitch
+      parameters:
+        - $ref: "#/components/parameters/DiscordGuildId"
+        - name: channelId
+          example: "123456"
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The Twitch channel id
+      responses:
+        '204':
+          description: Twitch channel removed
+        '404':
+          description: Channel not found
+        '500':
+          description: Internal server error
+
+  # Kick
+  /api/modules/kick/{guildId}/channels:
+    get:
+      summary: Get all Kick channels for a guild
+      tags:
+        - Kick
+      parameters:
+        - $ref: "#/components/parameters/DiscordGuildId"
+      responses:
+        '200':
+          description: A list of Kick channels
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/KickChannel"
+        '500':
+          description: Internal server error
+    post:
+      summary: Add a Kick channel to a guild
+      tags:
+        - Kick
+      parameters:
+        - $ref: "#/components/parameters/DiscordGuildId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/KickChannelRequestBody"
+      responses:
+        '201':
+          description: Kick channel added
+        '400':
+          description: Bad request
+        '404':
+          description: Channel not found
+        '500':
+          description: Internal server error
+
+  /api/modules/kick/search:
+    get:
+      summary: Search for Kick channels
+      tags:
+        - Kick
+      parameters:
+        - name: query
+          example: "foobar"
+          in: query
+          required: true
+          schema:
+            type: string
+          description: The search query
+      responses:
+        '200':
+          description: A list of Kick channels matching the search query
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/KickSearchResultItem"
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+
+  /api/modules/kick/{guildId}/channels/{broadcasterUserId}:
+    delete:
+      summary: Remove a Kick channel from a guild
+      tags:
+        - Kick
+      parameters:
+        - $ref: "#/components/parameters/DiscordGuildId"
+        - name: broadcasterUserId
+          example: 123456
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The Kick broadcaster user id
+      responses:
+        '204':
+          description: Kick channel removed
+        '404':
+          description: Channel not found
+        '500':
+          description: Internal server error
+
+  # YouTube
+
+  # Spotify
+components:
+  schemas:
+    UserSettings:
+      $ref: "./components/UserSettings.yml#/UserSettings"
+    Module:
+      $ref: "./components/Module.yml#/Module"
+    ModuleDatabaseEntry:
+      $ref: "./components/ModuleDatabaseEntry.yml#/ModuleDatabaseEntry"
+    ModuleSettings:
+      $ref: "./components/ModuleSettings.yml#/ModuleSettings"
+    GuildSettings:
+      $ref: "./components/GuildSettings.yml#/GuildSettings"
+    Guild:
+      $ref: "./components/Guild.yml#/Guild"
+    LogEntry:
+      $ref: "./components/LogEntry.yml#/LogEntry"
+    ChatRequestBody:
+      $ref: "./components/ChatRequestBody.yml#/ChatRequestBody"
+    TwitchChannel:
+      $ref: "./components/twitch/TwitchChannel.yml#/TwitchChannel"
+    TwitchSearchResultItem:
+      $ref: "./components/twitch/TwitchSearchResultItem.yml#/TwitchSearchResultItem"
+    TwitchChannelRequestBody:
+      $ref: "./components/twitch/TwitchChannelRequestBody.yml#/TwitchChannelRequestBody"
+    KickChannel:
+      $ref: "./components/kick/KickChannel.yml#/KickChannel"
+    KickSearchResultItem:
+      $ref: "./components/kick/KickSearchResultItem.yml#/KickSearchResultItem"
+    KickChannelDatabaseEntry:
+      $ref: "./components/kick/KickChannelDatabaseEntry.yml#/KickChannelDatabaseEntry"
+    KickChannelRequestBody:
+      $ref: "./components/kick/KickChannelRequestBody.yml#/KickChannelRequestBody"
+  parameters:
+    DiscordGuildId:
+      $ref: "./components/parameters/DiscordGuildId.yml"
+    DiscordChannelId:
+      $ref: "./components/parameters/DiscordChannelId.yml"

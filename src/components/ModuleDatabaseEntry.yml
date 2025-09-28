@@ -1,0 +1,18 @@
+ModuleDatabaseEntry:
+  type: object
+  properties:
+    guildId:
+      type: string
+      description: The guild ID
+      example: "123456789012345678"
+    slug:
+      type: string
+      description: The module slug
+      example: "foo"
+    settings:
+      type: string
+      description: Stringified JSON of the module settings for this guild
+  required:
+    - guildId
+    - slug
+    - settings

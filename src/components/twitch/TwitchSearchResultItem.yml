@@ -1,0 +1,69 @@
+TwitchSearchResultItem:
+  type: object
+  properties:
+    id:
+      type: string
+      description: The unique id of the channel
+      example: "67890"
+    broadcaster_login:
+      type: string
+      description: The login name of the broadcaster
+      example: "foobar"
+    display_name:
+      type: string
+      description: The display name of the broadcaster
+      example: "FooBar"
+    broadcaster_language:
+      type: string
+      description: The language of the broadcaster
+      example: "en"
+    game_id:
+      type: string
+      description: The id of the game being streamed
+      example: "12345"
+    game_name:
+      type: string
+      description: The name of the game being streamed
+      example: "Just Chatting"
+    is_live:
+      type: boolean
+      description: Whether the channel is currently live
+      example: true
+    thumbnail_url:
+      type: string
+      description: The URL of the channel's thumbnail image
+      example: "https://example.com/thumbnail.jpg"
+    title:
+      type: string
+      description: The title of the channel
+      example: "Welcome to my stream!"
+    started_at:
+      type: string
+      format: date-time
+      description: The time the channel started streaming
+      example: "2023-10-01T12:34:56Z"
+    tag_ids:
+      type: array
+      items:
+        type: string
+      description: The tag ids associated with the channel
+      example: ["abcdefg", "hijklmn"]
+    tags:
+      type: array
+      items:
+        type: string
+      description: The tags associated with the channel
+      example: ["English", "Just Chatting"]
+  required:
+    - id
+    - broadcaster_login
+    - display_name
+    - broadcaster_language
+    - game_id
+    - game_name
+    - is_live
+    - thumbnail_url
+    - title
+    - started_at
+    - tag_ids
+    - tags

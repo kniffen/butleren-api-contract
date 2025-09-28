@@ -1,0 +1,32 @@
+KickChannel:
+  type: object
+  properties:
+    broadcasterUserId:
+      type: number
+      description: The unique id of the channel
+      example: 67890
+    name:
+      type: string
+      description: The name of the channel
+      example: "Foobar"
+    description:
+      type: string
+      description: The description of the channel
+      example: "Just a cool streamer"
+    url:
+      type: string
+      description: The URL of the channel
+      example: "https://www.kick.com/foobar"
+    notificationChannelId:
+      type: string
+      description: The discord channel id for notifications
+      example: "123456789012345678"
+    notificationRoleId:
+      type: string
+      description: The discord role id for notifications
+      example: "987654321098765432"
+  required:
+    - broadcasterUserId
+    - name
+    - url
+    - notificationChannelId

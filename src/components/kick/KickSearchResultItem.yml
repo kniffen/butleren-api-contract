@@ -1,0 +1,90 @@
+KickSearchResultItem:
+  type: object
+  properties:
+    broadcaster_user_id:
+      type: number
+      description: The unique id of the channel
+      example: 67890
+    slug:
+      type: string
+      description: The login name of the broadcaster
+      example: "foobar"
+    channel_description:
+      type: string
+      description: Channel description
+      example: "Just a cool streamer"
+    stream_title:
+      type: string
+      description: The title of the channel
+      example: "Welcome to my stream!"
+    banner_picture:
+      type: string
+      description: The URL of the channel's banner image
+      example: "https://files.kick.com/images/channel/1234/banner_image/default-banner-2.jpg"
+    category:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The id of the category being streamed
+          example: "0"
+        name:
+          type: string
+          description: The name of the category being streamed
+          example: "Just Chatting"
+        thumbnail:
+          type: string
+          description: The URL of the category's thumbnail image
+          example: "https://files.kick.com/images/category/0/thumbnail.jpg"
+      required:
+        - id
+        - name
+        - thumbnail
+    stream:
+      type: object
+      properties:
+        url:
+          type: string
+          description: The URL of the stream
+          example: "https://www.kick.com/foobar"
+        is_live:
+          type: boolean
+          description: Whether the channel is currently live
+          example: true
+        is_mature:
+          type: boolean
+          description: Whether the channel is marked as mature
+          example: false
+        language:
+          type: string
+          description: The language of the broadcaster
+          example: "en"
+        start_time:
+          type: string
+          format: date-time
+          description: The time the channel started streaming
+          example: "2023-10-01T12:34:56Z"
+        viewer_count:
+          type: integer
+          description: The number of viewers currently watching the stream
+          example: 123
+        thumbnail:
+          type: string
+          description: The URL of the stream's thumbnail image
+          example: "https://files.kick.com/images/stream/1234/thumbnail.jpg"
+      required:
+        - url
+        - is_live
+        - is_mature
+        - language
+        - start_time
+        - viewer_count
+        - thumbnail
+  required:
+    - broadcaster_user_id
+    - slug
+    - channel_description
+    - stream_title
+    - banner_picture
+    - category
+    - stream
