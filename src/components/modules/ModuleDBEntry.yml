@@ -1,0 +1,16 @@
+ModuleDBEntry:
+  allOf:
+    - $ref: './ModuleSettings.yml#/ModuleSettings'
+    - type: object
+      properties:
+        guildId:
+          type: string
+          description: The guild ID
+          example: "123456789012345678"
+        slug:
+          type: string
+          description: The module slug
+          example: "foo"
+      required:
+        - guildId
+        - slug

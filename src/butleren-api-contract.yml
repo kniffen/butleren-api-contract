@@ -55,7 +55,6 @@ paths:
           description: Guild not found
         '500':
           description: Internal server error
-  /api/discord/guilds/{guildId}/settings:
     put:
       summary: Update a guild's settings
       tags:
@@ -122,6 +121,30 @@ paths:
                   $ref: "#/components/schemas/User"
         '500':
           description: Internal server error
+  # Logs
+  /api/logs:
+    get:
+      summary: Get log entries
+      tags:
+        - Logging
+      parameters:
+        - name: date
+          example: "2023-10-01"
+          in: query
+          required: true
+          schema:
+            type: string
+          description: The date to filter logs by (YYYY-MM-DD)
+      responses:
+        '200':
+          description: A list of logs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LogEntry"
+
   # Modules
   /api/modules/{guildId}:
     get:
@@ -141,9 +164,9 @@ paths:
                   $ref: "#/components/schemas/Module"
         '500':
           description: Internal server error
-  /api/modules/{guildId}/{slug}/settings:
-    put:
-      summary: Update a module's settings
+  /api/modules/{slug}/{guildId}:
+    post:
+      summary: Update a module's settings for a guild
       tags:
         - Modules
       parameters:
@@ -169,32 +192,10 @@ paths:
         '500':
           description: Internal server error
 
-  # Logger
-  /api/logger/entries:
-    get:
-      summary: Get log entries
-      tags:
-        - Logging
-      parameters:
-        - name: date
-          example: "2023-10-01"
-          in: query
-          required: true
-          schema:
-            type: string
-          description: The date to filter logs by (YYYY-MM-DD)
-      responses:
-        '200':
-          description: A list of logs
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/LogEntry"
+
 
   # Twitch
-  /api/modules/twitch/{guildId}/channels:
+  /api/twitch/{guildId}/channels:
     get:
       summary: Get all Twitch channels for a guild
       tags:
@@ -223,7 +224,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/TwitchChannelRequestBody"
+              $ref: "#/components/schemas/TwitchNotificationConfig"
       responses:
         '201':
           description: Twitch channel added
@@ -233,7 +234,7 @@ paths:
           description: Channel not found'
         '500':
           description: Internal server error
-  /api/modules/twitch/{guildId}/channels/search:
+  /api/twitch/channels/search:
     get:
       summary: Search for Twitch channels
       tags:
@@ -270,7 +271,7 @@ paths:
         '500':
           description: Internal server error
 
-  /api/modules/twitch/{guildId}/channels/{channelId}:
+  /api/twitch/{guildId}/channels/{channelId}:
     delete:
       summary: Remove a Twitch channel from a guild
       tags:
@@ -293,7 +294,7 @@ paths:
           description: Internal server error
 
   # Kick
-  /api/modules/kick/{guildId}/channels:
+  /api/kick/{guildId}/channels:
     get:
       summary: Get all Kick channels for a guild
       tags:
@@ -322,7 +323,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/KickChannelRequestBody"
+              $ref: "#/components/schemas/KickNotificationConfig"
       responses:
         '201':
           description: Kick channel added
@@ -333,7 +334,7 @@ paths:
         '500':
           description: Internal server error
 
-  /api/modules/kick/search:
+  /api/kick/search:
     get:
       summary: Search for Kick channels
       tags:
@@ -360,7 +361,7 @@ paths:
         '500':
           description: Internal server error
 
-  /api/modules/kick/{guildId}/channels/{broadcasterUserId}:
+  /api/kick/{guildId}/channels/{broadcasterUserId}:
     delete:
       summary: Remove a Kick channel from a guild
       tags:
@@ -387,38 +388,48 @@ paths:
   # Spotify
 components:
   schemas:
-    UserDBEntry:
-      $ref: "./components/users/UserDBEntry.yml#/UserDBEntry"
+    # Discord
+    Guild:
+      $ref: "./components/discord/Guild.yml#/Guild"
+    GuildSettings:
+      $ref: "./components/discord/GuildSettings.yml#/GuildSettings"
+    GuildDBEntry:
+      $ref: "./components/discord/GuildDBEntry.yml#/GuildDBEntry"
+    ChatRequestBody:
+      $ref: "./components/discord/ChatRequestBody.yml#/ChatRequestBody"
+    # Users
     User:
       $ref: "./components/users/User.yml#/User"
-    Module:
-      $ref: "./components/Module.yml#/Module"
-    ModuleDatabaseEntry:
-      $ref: "./components/ModuleDatabaseEntry.yml#/ModuleDatabaseEntry"
-    ModuleSettings:
-      $ref: "./components/ModuleSettings.yml#/ModuleSettings"
-    GuildSettings:
-      $ref: "./components/GuildSettings.yml#/GuildSettings"
-    Guild:
-      $ref: "./components/Guild.yml#/Guild"
+    UserDBEntry:
+      $ref: "./components/users/UserDBEntry.yml#/UserDBEntry"
+    # Logs
     LogEntry:
-      $ref: "./components/LogEntry.yml#/LogEntry"
-    ChatRequestBody:
-      $ref: "./components/ChatRequestBody.yml#/ChatRequestBody"
+      $ref: "./components/logs/LogEntry.yml#/LogEntry"
+    # Modules
+    Module:
+      $ref: "./components/modules/Module.yml#/Module"
+    ModuleDBEntry:
+      $ref: "./components/modules/ModuleDBEntry.yml#/ModuleDBEntry"
+    ModuleSettings:
+      $ref: "./components/modules/ModuleSettings.yml#/ModuleSettings"
+    # Twitch
     TwitchChannel:
       $ref: "./components/twitch/TwitchChannel.yml#/TwitchChannel"
+    TwitchChannelDBEntry:
+      $ref: "./components/twitch/TwitchChannelDBEntry.yml#/TwitchChannelDBEntry"
     TwitchSearchResultItem:
       $ref: "./components/twitch/TwitchSearchResultItem.yml#/TwitchSearchResultItem"
-    TwitchChannelRequestBody:
-      $ref: "./components/twitch/TwitchChannelRequestBody.yml#/TwitchChannelRequestBody"
+    TwitchNotificationConfig:
+      $ref: "./components/twitch/TwitchNotificationConfig.yml#/TwitchNotificationConfig"
+    # Kick
     KickChannel:
       $ref: "./components/kick/KickChannel.yml#/KickChannel"
+    KickNotificationConfig:
+      $ref: "./components/kick/KickNotificationConfig.yml#/KickNotificationConfig"
+    KickChannelDBEntry:
+      $ref: "./components/kick/KickChannelDBEntry.yml#/KickChannelDBEntry"
     KickSearchResultItem:
       $ref: "./components/kick/KickSearchResultItem.yml#/KickSearchResultItem"
-    KickChannelDatabaseEntry:
-      $ref: "./components/kick/KickChannelDatabaseEntry.yml#/KickChannelDatabaseEntry"
-    KickChannelRequestBody:
-      $ref: "./components/kick/KickChannelRequestBody.yml#/KickChannelRequestBody"
   parameters:
     DiscordGuildId:
       $ref: "./components/parameters/DiscordGuildId.yml"

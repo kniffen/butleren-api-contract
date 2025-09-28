@@ -1,10 +1,10 @@
-KickChannelRequestBody:
+TwitchNotificationConfig:
   type: object
   properties:
-    broadcasterUserId:
-      type: number
+    id:
+      type: string
       description: The unique id of the channel
-      example: 67890
+      example: "67890"
     notificationChannelId:
       type: string
       description: The discord channel id for notifications
@@ -14,5 +14,5 @@ KickChannelRequestBody:
       description: The discord role id for notifications
       example: "987654321098765432"
   required:
-    - broadcasterUserId
+    - id
     - notificationChannelId

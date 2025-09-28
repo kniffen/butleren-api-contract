@@ -2,9 +2,7 @@ Guild:
   type: object
   properties:
     id:
-      type: string
-      description: The guild's discord id
-      example: "123456789012345678"
+      $ref: "../singles/GuildId.yml"
     name:
       type: string
       description: The guild name
@@ -13,8 +11,6 @@ Guild:
       nullable: true
       description: The guild icon URL
     settings:
-      type: object
-      description: The guild settings
       $ref: "./GuildSettings.yml#/GuildSettings"
     channels:
       type: array
@@ -45,3 +41,4 @@ Guild:
     - id
     - name
     - iconURL
+    - settings
