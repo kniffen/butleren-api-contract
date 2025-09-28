@@ -10,7 +10,7 @@ const Guild = z
     id: z.string(),
     name: z.string(),
     iconURL: z.string().nullable(),
-    settings: GuildSettings.optional(),
+    settings: GuildSettings,
     channels: z
       .array(
         z
@@ -40,12 +40,22 @@ const ChatRequestBody = z
   .object({ message: z.string() })
   .strict()
   .passthrough();
+const _0 = z
+  .object({ lat: z.number(), lon: z.number() })
+  .partial()
+  .strict()
+  .passthrough();
 const User = z
+  .object({ id: z.string(), displayName: z.string(), settings: _0 })
+  .strict()
+  .passthrough();
+const LogEntry = z
   .object({
     id: z.string(),
-    displayName: z.string(),
-    lat: z.number().optional(),
-    lon: z.number().optional(),
+    timestamp: z.string().datetime({ offset: true }),
+    level: z.enum(["info", "warn", "error", "debug"]),
+    message: z.string(),
+    rest: z.array(z.string()).optional(),
   })
   .strict()
   .passthrough();
@@ -63,13 +73,11 @@ const Module = z
   })
   .strict()
   .passthrough();
-const LogEntry = z
+const TwitchNotificationConfig = z
   .object({
     id: z.string(),
-    timestamp: z.string().datetime({ offset: true }),
-    level: z.enum(["info", "warn", "error", "debug"]),
-    message: z.string(),
-    rest: z.array(z.string()).optional(),
+    notificationChannelId: z.string(),
+    notificationRoleId: z.string().optional(),
   })
   .strict()
   .passthrough();
@@ -79,16 +87,7 @@ const TwitchChannel = z
     name: z.string(),
     description: z.string().optional(),
     url: z.string(),
-    notificationChannelId: z.string(),
-    notificationRoleId: z.string().optional(),
-  })
-  .strict()
-  .passthrough();
-const TwitchChannelRequestBody = z
-  .object({
-    id: z.string(),
-    notificationChannelId: z.string(),
-    notificationRoleId: z.string().optional(),
+    notificationConfig: TwitchNotificationConfig,
   })
   .strict()
   .passthrough();
@@ -109,22 +108,21 @@ const TwitchSearchResultItem = z
   })
   .strict()
   .passthrough();
+const KickNotificationConfig = z
+  .object({
+    broadcasterUserId: z.number(),
+    notificationChannelId: z.string(),
+    notificationRoleId: z.string().optional(),
+  })
+  .strict()
+  .passthrough();
 const KickChannel = z
   .object({
     broadcasterUserId: z.number(),
     name: z.string(),
     description: z.string().optional(),
     url: z.string(),
-    notificationChannelId: z.string(),
-    notificationRoleId: z.string().optional(),
-  })
-  .strict()
-  .passthrough();
-const KickChannelRequestBody = z
-  .object({
-    broadcasterUserId: z.number(),
-    notificationChannelId: z.string(),
-    notificationRoleId: z.string().optional(),
+    notificationConfig: KickNotificationConfig,
   })
   .strict()
   .passthrough();
@@ -154,45 +152,47 @@ const KickSearchResultItem = z
   })
   .strict()
   .passthrough();
+const GuildDBEntry = GuildSettings.and(
+  z.object({ id: z.string() }).strict().passthrough()
+);
 const UserDBEntry = z
-  .object({
-    id: z.string(),
-    lat: z.number().optional(),
-    lon: z.number().optional(),
-  })
+  .object({ lat: z.number(), lon: z.number() })
+  .partial()
   .strict()
-  .passthrough();
-const ModuleDatabaseEntry = z
-  .object({ guildId: z.string(), slug: z.string(), settings: z.string() })
-  .strict()
-  .passthrough();
-const KickChannelDatabaseEntry = z
-  .object({
-    guildId: z.string(),
-    broadcasterUserId: z.number(),
-    notificationChannelId: z.string(),
-    notificationRoleId: z.string().optional(),
-  })
-  .strict()
-  .passthrough();
+  .passthrough()
+  .and(z.object({ id: z.string() }).strict().passthrough());
+const ModuleDBEntry = ModuleSettings.and(
+  z.object({ guildId: z.string(), slug: z.string() }).strict().passthrough()
+);
+const id = z.string();
+const TwitchChannelDBEntry = TwitchNotificationConfig.and(
+  z.object({ guildId: id }).strict().passthrough()
+);
+const KickChannelDBEntry = KickNotificationConfig.and(
+  z.object({ guildId: id }).strict().passthrough()
+);
 
 export const schemas = {
   GuildSettings,
   Guild,
   ChatRequestBody,
+  _0,
   User,
+  LogEntry,
   ModuleSettings,
   Module,
-  LogEntry,
+  TwitchNotificationConfig,
   TwitchChannel,
-  TwitchChannelRequestBody,
   TwitchSearchResultItem,
+  KickNotificationConfig,
   KickChannel,
-  KickChannelRequestBody,
   KickSearchResultItem,
+  GuildDBEntry,
   UserDBEntry,
-  ModuleDatabaseEntry,
-  KickChannelDatabaseEntry,
+  ModuleDBEntry,
+  id,
+  TwitchChannelDBEntry,
+  KickChannelDBEntry,
 };
 
 const endpoints = makeApi([
@@ -274,8 +274,8 @@ const endpoints = makeApi([
   },
   {
     method: "put",
-    path: "/api/discord/guilds/:guildId/settings",
-    alias: "putApidiscordguildsGuildIdsettings",
+    path: "/api/discord/guilds/:guildId",
+    alias: "putApidiscordguildsGuildId",
     requestFormat: "json",
     parameters: [
       {
@@ -305,8 +305,122 @@ const endpoints = makeApi([
   },
   {
     method: "get",
-    path: "/api/logger/entries",
-    alias: "getApiloggerentries",
+    path: "/api/kick/:guildId/channels",
+    alias: "getApikickGuildIdchannels",
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "guildId",
+        type: "Path",
+        schema: z.string(),
+      },
+    ],
+    response: z.array(KickChannel),
+    errors: [
+      {
+        status: 500,
+        description: `Internal server error`,
+        schema: z.void(),
+      },
+    ],
+  },
+  {
+    method: "post",
+    path: "/api/kick/:guildId/channels",
+    alias: "postApikickGuildIdchannels",
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "body",
+        type: "Body",
+        schema: KickNotificationConfig,
+      },
+      {
+        name: "guildId",
+        type: "Path",
+        schema: z.string(),
+      },
+    ],
+    response: z.void(),
+    errors: [
+      {
+        status: 400,
+        description: `Bad request`,
+        schema: z.void(),
+      },
+      {
+        status: 404,
+        description: `Channel not found`,
+        schema: z.void(),
+      },
+      {
+        status: 500,
+        description: `Internal server error`,
+        schema: z.void(),
+      },
+    ],
+  },
+  {
+    method: "delete",
+    path: "/api/kick/:guildId/channels/:broadcasterUserId",
+    alias: "deleteApikickGuildIdchannelsBroadcasterUserId",
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "guildId",
+        type: "Path",
+        schema: z.string(),
+      },
+      {
+        name: "broadcasterUserId",
+        type: "Path",
+        schema: z.number().int(),
+      },
+    ],
+    response: z.void(),
+    errors: [
+      {
+        status: 404,
+        description: `Channel not found`,
+        schema: z.void(),
+      },
+      {
+        status: 500,
+        description: `Internal server error`,
+        schema: z.void(),
+      },
+    ],
+  },
+  {
+    method: "get",
+    path: "/api/kick/search",
+    alias: "getApikicksearch",
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "query",
+        type: "Query",
+        schema: z.string(),
+      },
+    ],
+    response: z.array(KickSearchResultItem),
+    errors: [
+      {
+        status: 400,
+        description: `Bad request`,
+        schema: z.void(),
+      },
+      {
+        status: 500,
+        description: `Internal server error`,
+        schema: z.void(),
+      },
+    ],
+  },
+  {
+    method: "get",
+    path: "/api/logs",
+    alias: "getApilogs",
     requestFormat: "json",
     parameters: [
       {
@@ -339,9 +453,9 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: "put",
-    path: "/api/modules/:guildId/:slug/settings",
-    alias: "putApimodulesGuildIdSlugsettings",
+    method: "post",
+    path: "/api/modules/:slug/:guildId",
+    alias: "postApimodulesSlugGuildId",
     requestFormat: "json",
     parameters: [
       {
@@ -376,122 +490,8 @@ const endpoints = makeApi([
   },
   {
     method: "get",
-    path: "/api/modules/kick/:guildId/channels",
-    alias: "getApimoduleskickGuildIdchannels",
-    requestFormat: "json",
-    parameters: [
-      {
-        name: "guildId",
-        type: "Path",
-        schema: z.string(),
-      },
-    ],
-    response: z.array(KickChannel),
-    errors: [
-      {
-        status: 500,
-        description: `Internal server error`,
-        schema: z.void(),
-      },
-    ],
-  },
-  {
-    method: "post",
-    path: "/api/modules/kick/:guildId/channels",
-    alias: "postApimoduleskickGuildIdchannels",
-    requestFormat: "json",
-    parameters: [
-      {
-        name: "body",
-        type: "Body",
-        schema: KickChannelRequestBody,
-      },
-      {
-        name: "guildId",
-        type: "Path",
-        schema: z.string(),
-      },
-    ],
-    response: z.void(),
-    errors: [
-      {
-        status: 400,
-        description: `Bad request`,
-        schema: z.void(),
-      },
-      {
-        status: 404,
-        description: `Channel not found`,
-        schema: z.void(),
-      },
-      {
-        status: 500,
-        description: `Internal server error`,
-        schema: z.void(),
-      },
-    ],
-  },
-  {
-    method: "delete",
-    path: "/api/modules/kick/:guildId/channels/:broadcasterUserId",
-    alias: "deleteApimoduleskickGuildIdchannelsBroadcasterUserId",
-    requestFormat: "json",
-    parameters: [
-      {
-        name: "guildId",
-        type: "Path",
-        schema: z.string(),
-      },
-      {
-        name: "broadcasterUserId",
-        type: "Path",
-        schema: z.number().int(),
-      },
-    ],
-    response: z.void(),
-    errors: [
-      {
-        status: 404,
-        description: `Channel not found`,
-        schema: z.void(),
-      },
-      {
-        status: 500,
-        description: `Internal server error`,
-        schema: z.void(),
-      },
-    ],
-  },
-  {
-    method: "get",
-    path: "/api/modules/kick/search",
-    alias: "getApimoduleskicksearch",
-    requestFormat: "json",
-    parameters: [
-      {
-        name: "query",
-        type: "Query",
-        schema: z.string(),
-      },
-    ],
-    response: z.array(KickSearchResultItem),
-    errors: [
-      {
-        status: 400,
-        description: `Bad request`,
-        schema: z.void(),
-      },
-      {
-        status: 500,
-        description: `Internal server error`,
-        schema: z.void(),
-      },
-    ],
-  },
-  {
-    method: "get",
-    path: "/api/modules/twitch/:guildId/channels",
-    alias: "getApimodulestwitchGuildIdchannels",
+    path: "/api/twitch/:guildId/channels",
+    alias: "getApitwitchGuildIdchannels",
     requestFormat: "json",
     parameters: [
       {
@@ -511,14 +511,14 @@ const endpoints = makeApi([
   },
   {
     method: "post",
-    path: "/api/modules/twitch/:guildId/channels",
-    alias: "postApimodulestwitchGuildIdchannels",
+    path: "/api/twitch/:guildId/channels",
+    alias: "postApitwitchGuildIdchannels",
     requestFormat: "json",
     parameters: [
       {
         name: "body",
         type: "Body",
-        schema: TwitchChannelRequestBody,
+        schema: TwitchNotificationConfig,
       },
       {
         name: "guildId",
@@ -547,8 +547,8 @@ const endpoints = makeApi([
   },
   {
     method: "delete",
-    path: "/api/modules/twitch/:guildId/channels/:channelId",
-    alias: "deleteApimodulestwitchGuildIdchannelsChannelId",
+    path: "/api/twitch/:guildId/channels/:channelId",
+    alias: "deleteApitwitchGuildIdchannelsChannelId",
     requestFormat: "json",
     parameters: [
       {
@@ -578,8 +578,8 @@ const endpoints = makeApi([
   },
   {
     method: "get",
-    path: "/api/modules/twitch/:guildId/channels/search",
-    alias: "getApimodulestwitchGuildIdchannelssearch",
+    path: "/api/twitch/channels/search",
+    alias: "getApitwitchchannelssearch",
     requestFormat: "json",
     parameters: [
       {

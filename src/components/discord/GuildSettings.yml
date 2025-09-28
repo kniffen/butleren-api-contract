@@ -9,4 +9,5 @@ GuildSettings:
       description: The color of the embeds
       example: "#FF0000"
   required:
+    - id
     - color

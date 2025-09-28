@@ -9,14 +9,9 @@ User:
       type: string
       description: The user's display name
       example: "JohnDoe"
-    lat:
-      type: number
-      description: The latitude of the user's location
-      example: 37.7749
-    lon:
-      type: number
-      description: The longitude of the user's location
-      example: -122.4194
+    settings:
+      $ref: './UserSettings.yml#/UserSettings'
   required:
     - id
     - displayName
+    - settings

@@ -1,0 +1,11 @@
+UserSettings:
+  type: object
+  properties:
+    lat:
+      type: number
+      description: The latitude of the user's location
+      example: 37.7749
+    lon:
+      type: number
+      description: The longitude of the user's location
+      example: -122.4194

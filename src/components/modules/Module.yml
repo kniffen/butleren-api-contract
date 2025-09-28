@@ -18,8 +18,6 @@ Module:
       description: Whether the module is locked
       example: false
     settings:
-      type: object
-      description: The module settings
       $ref: "./ModuleSettings.yml#/ModuleSettings"
   required:
     - slug

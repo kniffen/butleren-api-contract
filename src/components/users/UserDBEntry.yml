@@ -1,18 +1,11 @@
 UserDBEntry:
-  type: object
-  properties:
-    id:
-      type: string
-      description: The unique id of the user
-      example: "67890"
-    lat:
-      type: number
-      description: The latitude of the user's location
-      example: 37.7749
-    lon:
-      type: number
-      description: The longitude of the user's location
-      example: -122.4194
-  required:
-    - id
-    - displayName
+  allOf:
+    - $ref: './UserSettings.yml#/UserSettings'
+    - type: object
+      properties:
+        id:
+          type: string
+          description: The unique id of the user
+          example: "67890"
+      required:
+        - id
