@@ -6,7 +6,7 @@
   "scripts": {
     "validate-contract": "swagger-cli validate src/butleren-api-contract.yml",
     "build-schema": "openapi-zod-client src/butleren-api-contract.yml --output schema.ts --export-schemas --strict-objects",
-    "postinstall": "npm run build",
+    "postinstall": "npm run build-schema",
     "generate-api-docs": "node script/createSwaggerUI.js",
     "build": "npm run build-schema && npm run generate-api-docs"
   },
