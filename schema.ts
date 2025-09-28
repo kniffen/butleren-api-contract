@@ -161,9 +161,14 @@ const UserDBEntry = z
   .strict()
   .passthrough()
   .and(z.object({ id: z.string() }).strict().passthrough());
-const ModuleDBEntry = ModuleSettings.and(
-  z.object({ guildId: z.string(), slug: z.string() }).strict().passthrough()
-);
+const ModuleDBEntry = z
+  .object({
+    guildId: z.string(),
+    slug: z.string(),
+    isEnabled: z.union([z.literal(0), z.literal(1)]),
+  })
+  .strict()
+  .passthrough();
 const id = z.string();
 const TwitchChannelDBEntry = TwitchNotificationConfig.and(
   z.object({ guildId: id }).strict().passthrough()
