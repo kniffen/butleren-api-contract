@@ -44,7 +44,8 @@ const User = z
   .object({
     id: z.string(),
     displayName: z.string(),
-    location: z.string().optional(),
+    lat: z.number().optional(),
+    lon: z.number().optional(),
   })
   .strict()
   .passthrough();
@@ -153,9 +154,12 @@ const KickSearchResultItem = z
   })
   .strict()
   .passthrough();
-const UserSettings = z
-  .object({ location: z.string() })
-  .partial()
+const UserDBEntry = z
+  .object({
+    id: z.string(),
+    lat: z.number().optional(),
+    lon: z.number().optional(),
+  })
   .strict()
   .passthrough();
 const ModuleDatabaseEntry = z
@@ -186,7 +190,7 @@ export const schemas = {
   KickChannel,
   KickChannelRequestBody,
   KickSearchResultItem,
-  UserSettings,
+  UserDBEntry,
   ModuleDatabaseEntry,
   KickChannelDatabaseEntry,
 };
