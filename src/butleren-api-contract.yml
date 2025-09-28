@@ -387,10 +387,10 @@ paths:
   # Spotify
 components:
   schemas:
+    UserDBEntry:
+      $ref: "./components/users/UserDBEntry.yml#/UserDBEntry"
     User:
       $ref: "./components/users/User.yml#/User"
-    UserSettings:
-      $ref: "./components/users/UserSettings.yml#/UserSettings"
     Module:
       $ref: "./components/Module.yml#/Module"
     ModuleDatabaseEntry:

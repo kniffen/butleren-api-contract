@@ -1,7 +1,0 @@
-UserSettings:
-  type: object
-  properties:
-    location:
-      type: string
-      description: The user's location
-      example: "Germany"
