@@ -12,7 +12,7 @@
   },
   "devDependencies": {
     "swagger-cli": "^4.0.4",
-    "swagger-ui-dist": "^5.20.0"
+    "swagger-ui-dist": "^5.29.1"
   },
   "dependencies": {
     "@zodios/core": "^10.9.6",
