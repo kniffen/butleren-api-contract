@@ -75,7 +75,7 @@ const Module = z
   .passthrough();
 const Command = z
   .object({
-    name: z.string(),
+    slug: z.string(),
     description: z.string(),
     isLocked: z.boolean(),
     isEnabled: z.boolean(),
@@ -183,7 +183,11 @@ const ModuleDBEntry = z
   .strict()
   .passthrough();
 const CommandDBEntry = z
-  .object({ guildId: z.string(), name: z.string(), isEnabled: z.boolean() })
+  .object({
+    guildId: z.string(),
+    slug: z.string(),
+    isEnabled: z.union([z.literal(0), z.literal(1)]),
+  })
   .strict()
   .passthrough();
 const id = z.string();

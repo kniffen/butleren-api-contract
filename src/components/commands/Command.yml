@@ -1,7 +1,7 @@
 Command:
   type: object
   properties:
-    name:
+    slug:
       type: string
       description: The command's name
       example: "foo"
@@ -18,7 +18,7 @@ Command:
       description: Whether the command is enabled
       example: true
   required:
-    - name
+    - slug
     - description
     - isLocked
     - isEnabled
