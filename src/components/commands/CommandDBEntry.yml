@@ -5,15 +5,18 @@ CommandDBEntry:
       type: string
       description: The guild ID
       example: "123456789012345678"
-    name:
+    slug:
       type: string
       description: The command's name
       example: "foo"
     isEnabled:
-      type: boolean
-      description: Whether the command is enabled
-      example: true
+      type: integer
+      description: Whether the command is enabled (1) or disabled (0)
+      example: 1
+      enum:
+        - 0
+        - 1
   required:
     - guildId
-    - name
+    - slug
     - isEnabled
