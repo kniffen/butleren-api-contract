@@ -14,6 +14,8 @@ tags:
     description: Log entry retrieval and management
   - name: Modules
     description: Module configuration and settings
+  - name: Commands
+    description: Command management
   - name: Twitch
     description: Twitch integration and management
   - name: Kick
@@ -165,7 +167,7 @@ paths:
         '500':
           description: Internal server error
   /api/modules/{slug}/{guildId}:
-    post:
+    put:
       summary: Update a module's settings for a guild
       tags:
         - Modules
@@ -192,7 +194,52 @@ paths:
         '500':
           description: Internal server error
 
-
+  # Commands
+  /api/commands/{guildId}:
+    get:
+      summary: Get all commands for a guild
+      tags:
+        - Commands
+      parameters:
+        - $ref: "#/components/parameters/DiscordGuildId"
+      responses:
+        '200':
+          description: A list of commands
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Command"
+        '500':
+          description: Internal server error
+  /api/commands/{name}/{guildId}:
+    put:
+      summary: Update a command's settings for a guild
+      tags:
+        - Commands
+      parameters:
+        - $ref: "#/components/parameters/DiscordGuildId"
+        - name: name
+          example: "foo"
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The command name
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CommandSettings"
+      responses:
+        '204':
+          description: Command settings updated
+        '404':
+          description: Command not found
+        '500':
+          description: Internal server error
 
   # Twitch
   /api/twitch/{guildId}/channels:
@@ -412,6 +459,12 @@ components:
       $ref: "./components/modules/ModuleDBEntry.yml#/ModuleDBEntry"
     ModuleSettings:
       $ref: "./components/modules/ModuleSettings.yml#/ModuleSettings"
+    Command:
+      $ref: "./components/commands/Command.yml#/Command"
+    CommandDBEntry:
+      $ref: "./components/commands/CommandDBEntry.yml#/CommandDBEntry"
+    CommandSettings:
+      $ref: "./components/commands/CommandSettings.yml#/CommandSettings"
     # Twitch
     TwitchChannel:
       $ref: "./components/twitch/TwitchChannel.yml#/TwitchChannel"

@@ -73,6 +73,19 @@ const Module = z
   })
   .strict()
   .passthrough();
+const Command = z
+  .object({
+    name: z.string(),
+    description: z.string(),
+    isLocked: z.boolean(),
+    isEnabled: z.boolean(),
+  })
+  .strict()
+  .passthrough();
+const CommandSettings = z
+  .object({ isEnabled: z.boolean() })
+  .strict()
+  .passthrough();
 const TwitchNotificationConfig = z
   .object({
     id: z.string(),
@@ -169,6 +182,10 @@ const ModuleDBEntry = z
   })
   .strict()
   .passthrough();
+const CommandDBEntry = z
+  .object({ guildId: z.string(), name: z.string(), isEnabled: z.boolean() })
+  .strict()
+  .passthrough();
 const id = z.string();
 const TwitchChannelDBEntry = TwitchNotificationConfig.and(
   z.object({ guildId: id }).strict().passthrough()
@@ -186,6 +203,8 @@ export const schemas = {
   LogEntry,
   ModuleSettings,
   Module,
+  Command,
+  CommandSettings,
   TwitchNotificationConfig,
   TwitchChannel,
   TwitchSearchResultItem,
@@ -195,12 +214,70 @@ export const schemas = {
   GuildDBEntry,
   UserDBEntry,
   ModuleDBEntry,
+  CommandDBEntry,
   id,
   TwitchChannelDBEntry,
   KickChannelDBEntry,
 };
 
 const endpoints = makeApi([
+  {
+    method: "get",
+    path: "/api/commands/:guildId",
+    alias: "getApicommandsGuildId",
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "guildId",
+        type: "Path",
+        schema: z.string(),
+      },
+    ],
+    response: z.array(Command),
+    errors: [
+      {
+        status: 500,
+        description: `Internal server error`,
+        schema: z.void(),
+      },
+    ],
+  },
+  {
+    method: "put",
+    path: "/api/commands/:name/:guildId",
+    alias: "putApicommandsNameGuildId",
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "body",
+        type: "Body",
+        schema: z.object({ isEnabled: z.boolean() }).strict().passthrough(),
+      },
+      {
+        name: "guildId",
+        type: "Path",
+        schema: z.string(),
+      },
+      {
+        name: "name",
+        type: "Path",
+        schema: z.string(),
+      },
+    ],
+    response: z.void(),
+    errors: [
+      {
+        status: 404,
+        description: `Command not found`,
+        schema: z.void(),
+      },
+      {
+        status: 500,
+        description: `Internal server error`,
+        schema: z.void(),
+      },
+    ],
+  },
   {
     method: "post",
     path: "/api/discord/:channelId/chat",
@@ -458,9 +535,9 @@ const endpoints = makeApi([
     ],
   },
   {
-    method: "post",
+    method: "put",
     path: "/api/modules/:slug/:guildId",
-    alias: "postApimodulesSlugGuildId",
+    alias: "putApimodulesSlugGuildId",
     requestFormat: "json",
     parameters: [
       {
