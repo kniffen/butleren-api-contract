@@ -284,6 +284,37 @@ const endpoints = makeApi([
   },
   {
     method: "post",
+    path: "/api/commands/:name/:guildId/restore",
+    alias: "postApicommandsNameGuildIdrestore",
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "guildId",
+        type: "Path",
+        schema: z.string(),
+      },
+      {
+        name: "name",
+        type: "Path",
+        schema: z.string(),
+      },
+    ],
+    response: z.void(),
+    errors: [
+      {
+        status: 404,
+        description: `Command not found`,
+        schema: z.void(),
+      },
+      {
+        status: 500,
+        description: `Internal server error`,
+        schema: z.void(),
+      },
+    ],
+  },
+  {
+    method: "post",
     path: "/api/discord/:channelId/chat",
     alias: "postApidiscordChannelIdchat",
     requestFormat: "json",
