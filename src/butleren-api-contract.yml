@@ -240,6 +240,28 @@ paths:
           description: Command not found
         '500':
           description: Internal server error
+  /api/commands/{name}/{guildId}/restore:
+    post:
+      summary: Restore a command to its default state for a guild
+      tags:
+        - Commands
+      parameters:
+        - $ref: "#/components/parameters/DiscordGuildId"
+        - name: name
+          example: "foo"
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The command name
+      responses:
+        '204':
+          description: Command restored to default
+        '404':
+          description: Command not found
+        '500':
+          description: Internal server error
+
 
   # Twitch
   /api/twitch/{guildId}/channels:
