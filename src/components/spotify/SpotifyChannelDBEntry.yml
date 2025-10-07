@@ -1,0 +1,10 @@
+SpotifyChannelDBEntry:
+  allOf:
+    - $ref: './SpotifyNotificationConfig.yml#/SpotifyNotificationConfig'
+    - type: object
+      properties:
+        guildId:
+          type: string
+          $ref: '../singles/GuildId.yml'
+      required:
+        - guildId
