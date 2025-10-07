@@ -303,13 +303,12 @@ paths:
           description: Channel not found'
         '500':
           description: Internal server error
-  /api/twitch/channels/search:
+  /api/twitch/search:
     get:
       summary: Search for Twitch channels
       tags:
         - Twitch
       parameters:
-        - $ref: "#/components/parameters/DiscordGuildId"
         - name: query
           example: "foobar"
           in: query
@@ -317,15 +316,6 @@ paths:
           schema:
             type: string
           description: The search query
-        - name: type
-          example: "channels"
-          in: query
-          required: true
-          schema:
-            type: string
-            enum:
-              - channels
-          description: The type of search
       responses:
         '200':
           description: A list of Twitch channels matching the search query
