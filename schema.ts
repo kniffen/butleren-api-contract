@@ -695,24 +695,14 @@ const endpoints = makeApi([
   },
   {
     method: "get",
-    path: "/api/twitch/channels/search",
-    alias: "getApitwitchchannelssearch",
+    path: "/api/twitch/search",
+    alias: "getApitwitchsearch",
     requestFormat: "json",
     parameters: [
-      {
-        name: "guildId",
-        type: "Path",
-        schema: z.string(),
-      },
       {
         name: "query",
         type: "Query",
         schema: z.string(),
-      },
-      {
-        name: "type",
-        type: "Query",
-        schema: z.literal("channels"),
       },
     ],
     response: z.array(TwitchSearchResultItem),
