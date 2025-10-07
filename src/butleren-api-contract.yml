@@ -20,8 +20,11 @@ tags:
     description: Twitch integration and management
   - name: Kick
     description: Kick integration and management
+  - name: YouTube
+    description: YouTube integration and management
   - name: Spotify
     description: Spotify integration and management
+
 
 paths:
   # Discord
@@ -125,6 +128,7 @@ paths:
                   $ref: "#/components/schemas/User"
         '500':
           description: Internal server error
+
   # Logs
   /api/logs:
     get:
@@ -305,7 +309,6 @@ paths:
           description: Channel not found'
         '500':
           description: Internal server error
-
   /api/twitch/{guildId}/channels/{channelId}:
     delete:
       summary: Remove a Twitch channel from a guild
@@ -327,7 +330,6 @@ paths:
           description: Channel not found
         '500':
           description: Internal server error
-
   /api/twitch/search:
     get:
       summary: Search for Twitch channels
@@ -395,8 +397,6 @@ paths:
           description: Channel not found
         '500':
           description: Internal server error
-
-
   /api/kick/{guildId}/channels/{broadcasterUserId}:
     delete:
       summary: Remove a Kick channel from a guild
@@ -418,7 +418,6 @@ paths:
           description: Channel not found
         '500':
           description: Internal server error
-
   /api/kick/search:
     get:
       summary: Search for Kick channels
@@ -447,6 +446,92 @@ paths:
           description: Internal server error
 
   # YouTube
+  /api/youtube/{guildId}/channels:
+    get:
+      summary: Get all YouTube channels for a guild
+      tags:
+        - YouTube
+      parameters:
+        - $ref: "#/components/parameters/DiscordGuildId"
+      responses:
+        '200':
+          description: A list of YouTube channels
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/YouTubeChannel"
+        '500':
+          description: Internal server error
+    post:
+      summary: Add a YouTube channel to a guild
+      tags:
+        - YouTube
+      parameters:
+        - $ref: "#/components/parameters/DiscordGuildId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/YouTubeNotificationConfig"
+      responses:
+        '201':
+          description: YouTube channel added
+        '400':
+          description: Bad request
+        '404':
+          description: Channel not found
+        '500':
+          description: Internal server error
+  /api/youtube/{guildId}/channels/{channelId}:
+    delete:
+      summary: Remove a YouTube channel from a guild
+      tags:
+        - YouTube
+      parameters:
+        - $ref: "#/components/parameters/DiscordGuildId"
+        - name: channelId
+          example: UC_x5XG1OV2P6uZZ5FSM9Ttw
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The YouTube channel id
+      responses:
+        '204':
+          description: YouTube channel removed
+        '404':
+          description: Channel not found
+        '500':
+          description: Internal server error
+  /api/youtube/search:
+    get:
+      summary: Search for YouTube channels
+      tags:
+        - YouTube
+      parameters:
+        - name: query
+          example: "foobar"
+          in: query
+          required: true
+          schema:
+            type: string
+          description: The search query
+      responses:
+        '200':
+          description: A list of YouTube channels matching the search query
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/YouTubeSearchResultItem"
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
 
   # Spotify
   /api/spotify/{guildId}/shows:
@@ -488,7 +573,6 @@ paths:
           description: Channel not found
         '500':
           description: Internal server error
-
   /api/spotify/{guildId}/shows/{showId}:
     delete:
       summary: Remove a Spotify show from a guild
@@ -510,7 +594,6 @@ paths:
           description: Channel not found
         '500':
           description: Internal server error
-
   /api/spotify/search:
     get:
       summary: Search for Spotify shows
@@ -588,6 +671,15 @@ components:
       $ref: "./components/kick/KickChannelDBEntry.yml#/KickChannelDBEntry"
     KickSearchResultItem:
       $ref: "./components/kick/KickSearchResultItem.yml#/KickSearchResultItem"
+    # YouTube
+    YouTubeChannel:
+      $ref: "./components/youtube/YouTubeChannel.yml#/YouTubeChannel"
+    YouTubeNotificationConfig:
+      $ref: "./components/youtube/YouTubeNotificationConfig.yml#/YouTubeNotificationConfig"
+    YouTubeChannelDBEntry:
+      $ref: "./components/youtube/YouTubeChannelDBEntry.yml#/YouTubeChannelDBEntry"
+    YouTubeSearchResultItem:
+      $ref: "./components/youtube/YouTubeSearchResultItem.yml#/YouTubeSearchResultItem"
     # Spotify
     SpotifyShow:
       $ref: "./components/spotify/SpotifyShow.yml#/SpotifyShow"
