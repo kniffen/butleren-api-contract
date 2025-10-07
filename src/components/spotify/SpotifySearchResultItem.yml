@@ -1,0 +1,19 @@
+SpotifySearchResultItem:
+  type: object
+  properties:
+    showId:
+      type: string
+      description: The unique id for the show
+      example: 5CfCWKI5pZ28U0uOzXkDHe
+    name:
+      type: string
+      description: The name of the show
+      example: "Foobar"
+    imageURL:
+      type: string
+      description: The URL of the show's image
+      example: "https://example.com/image.jpg"
+  required:
+    - showId
+    - name
+    - imageURL

@@ -165,6 +165,26 @@ const KickSearchResultItem = z
   })
   .strict()
   .passthrough();
+const SpotifyNotificationConfig = z
+  .object({
+    showId: z.string(),
+    notificationChannelId: z.string(),
+    notificationRoleId: z.string().optional(),
+  })
+  .strict()
+  .passthrough();
+const SpotifyShow = z
+  .object({
+    showId: z.string(),
+    name: z.string(),
+    notificationConfig: SpotifyNotificationConfig,
+  })
+  .strict()
+  .passthrough();
+const SpotifySearchResultItem = z
+  .object({ showId: z.string(), name: z.string(), imageURL: z.string() })
+  .strict()
+  .passthrough();
 const GuildDBEntry = GuildSettings.and(
   z.object({ id: z.string() }).strict().passthrough()
 );
@@ -197,6 +217,9 @@ const TwitchChannelDBEntry = TwitchNotificationConfig.and(
 const KickChannelDBEntry = KickNotificationConfig.and(
   z.object({ guildId: id }).strict().passthrough()
 );
+const SpotifyChannelDBEntry = SpotifyNotificationConfig.and(
+  z.object({ guildId: id }).strict().passthrough()
+);
 
 export const schemas = {
   GuildSettings,
@@ -215,6 +238,9 @@ export const schemas = {
   KickNotificationConfig,
   KickChannel,
   KickSearchResultItem,
+  SpotifyNotificationConfig,
+  SpotifyShow,
+  SpotifySearchResultItem,
   GuildDBEntry,
   UserDBEntry,
   ModuleDBEntry,
@@ -222,6 +248,7 @@ export const schemas = {
   id,
   TwitchChannelDBEntry,
   KickChannelDBEntry,
+  SpotifyChannelDBEntry,
 };
 
 const endpoints = makeApi([
@@ -596,6 +623,120 @@ const endpoints = makeApi([
       {
         status: 404,
         description: `Module not found`,
+        schema: z.void(),
+      },
+      {
+        status: 500,
+        description: `Internal server error`,
+        schema: z.void(),
+      },
+    ],
+  },
+  {
+    method: "get",
+    path: "/api/spotify/:guildId/shows",
+    alias: "getApispotifyGuildIdshows",
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "guildId",
+        type: "Path",
+        schema: z.string(),
+      },
+    ],
+    response: z.array(SpotifyShow),
+    errors: [
+      {
+        status: 500,
+        description: `Internal server error`,
+        schema: z.void(),
+      },
+    ],
+  },
+  {
+    method: "post",
+    path: "/api/spotify/:guildId/shows",
+    alias: "postApispotifyGuildIdshows",
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "body",
+        type: "Body",
+        schema: SpotifyNotificationConfig,
+      },
+      {
+        name: "guildId",
+        type: "Path",
+        schema: z.string(),
+      },
+    ],
+    response: z.void(),
+    errors: [
+      {
+        status: 400,
+        description: `Bad request`,
+        schema: z.void(),
+      },
+      {
+        status: 404,
+        description: `Channel not found`,
+        schema: z.void(),
+      },
+      {
+        status: 500,
+        description: `Internal server error`,
+        schema: z.void(),
+      },
+    ],
+  },
+  {
+    method: "delete",
+    path: "/api/spotify/:guildId/shows/:showId",
+    alias: "deleteApispotifyGuildIdshowsShowId",
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "guildId",
+        type: "Path",
+        schema: z.string(),
+      },
+      {
+        name: "showId",
+        type: "Path",
+        schema: z.number().int(),
+      },
+    ],
+    response: z.void(),
+    errors: [
+      {
+        status: 404,
+        description: `Channel not found`,
+        schema: z.void(),
+      },
+      {
+        status: 500,
+        description: `Internal server error`,
+        schema: z.void(),
+      },
+    ],
+  },
+  {
+    method: "get",
+    path: "/api/spotify/search",
+    alias: "getApispotifysearch",
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "query",
+        type: "Query",
+        schema: z.string(),
+      },
+    ],
+    response: z.array(SpotifySearchResultItem),
+    errors: [
+      {
+        status: 400,
+        description: `Bad request`,
         schema: z.void(),
       },
       {

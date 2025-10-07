@@ -1,0 +1,18 @@
+SpotifyNotificationConfig:
+  type: object
+  properties:
+    showId:
+      type: string
+      description: The unique id of the show
+      example: 5CfCWKI5pZ28U0uOzXkDHe
+    notificationChannelId:
+      type: string
+      description: The discord channel id for notifications
+      example: "123456789012345678"
+    notificationRoleId:
+      type: string
+      description: The discord role id for notifications
+      example: "987654321098765432"
+  required:
+    - showId
+    - notificationChannelId

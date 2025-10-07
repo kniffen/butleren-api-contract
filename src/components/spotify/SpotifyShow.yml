@@ -1,0 +1,17 @@
+SpotifyShow:
+  type: object
+  properties:
+    showId:
+      type: string
+      description: The unique id for the show
+      example: 5CfCWKI5pZ28U0uOzXkDHe
+    name:
+      type: string
+      description: The name of the show
+      example: "Foobar"
+    notificationConfig:
+      $ref: "./SpotifyNotificationConfig.yml#/SpotifyNotificationConfig"
+  required:
+    - showId
+    - name
+    - notificationConfig
