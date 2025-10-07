@@ -165,6 +165,27 @@ const KickSearchResultItem = z
   })
   .strict()
   .passthrough();
+const YouTubeNotificationConfig = z
+  .object({
+    channelId: z.string(),
+    includeLiveStreams: z.boolean().optional().default(false),
+    notificationChannelId: z.string(),
+    notificationRoleId: z.string().optional(),
+  })
+  .strict()
+  .passthrough();
+const YouTubeChannel = z
+  .object({
+    channelId: z.string(),
+    name: z.string(),
+    notificationConfig: YouTubeNotificationConfig,
+  })
+  .strict()
+  .passthrough();
+const YouTubeSearchResultItem = z
+  .object({ channelId: z.string(), name: z.string(), imageURL: z.string() })
+  .strict()
+  .passthrough();
 const SpotifyNotificationConfig = z
   .object({
     showId: z.string(),
@@ -217,6 +238,15 @@ const TwitchChannelDBEntry = TwitchNotificationConfig.and(
 const KickChannelDBEntry = KickNotificationConfig.and(
   z.object({ guildId: id }).strict().passthrough()
 );
+const YouTubeChannelDBEntry = z
+  .object({
+    guildId: id,
+    includeLiveStreams: z.union([z.literal(0), z.literal(1)]),
+    notificationChannelId: z.string(),
+    notificationRoleId: z.string().optional(),
+  })
+  .strict()
+  .passthrough();
 const SpotifyChannelDBEntry = SpotifyNotificationConfig.and(
   z.object({ guildId: id }).strict().passthrough()
 );
@@ -238,6 +268,9 @@ export const schemas = {
   KickNotificationConfig,
   KickChannel,
   KickSearchResultItem,
+  YouTubeNotificationConfig,
+  YouTubeChannel,
+  YouTubeSearchResultItem,
   SpotifyNotificationConfig,
   SpotifyShow,
   SpotifySearchResultItem,
@@ -248,6 +281,7 @@ export const schemas = {
   id,
   TwitchChannelDBEntry,
   KickChannelDBEntry,
+  YouTubeChannelDBEntry,
   SpotifyChannelDBEntry,
 };
 
@@ -867,6 +901,120 @@ const endpoints = makeApi([
     requestFormat: "json",
     response: z.array(User),
     errors: [
+      {
+        status: 500,
+        description: `Internal server error`,
+        schema: z.void(),
+      },
+    ],
+  },
+  {
+    method: "get",
+    path: "/api/youtube/:guildId/channels",
+    alias: "getApiyoutubeGuildIdchannels",
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "guildId",
+        type: "Path",
+        schema: z.string(),
+      },
+    ],
+    response: z.array(YouTubeChannel),
+    errors: [
+      {
+        status: 500,
+        description: `Internal server error`,
+        schema: z.void(),
+      },
+    ],
+  },
+  {
+    method: "post",
+    path: "/api/youtube/:guildId/channels",
+    alias: "postApiyoutubeGuildIdchannels",
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "body",
+        type: "Body",
+        schema: YouTubeNotificationConfig,
+      },
+      {
+        name: "guildId",
+        type: "Path",
+        schema: z.string(),
+      },
+    ],
+    response: z.void(),
+    errors: [
+      {
+        status: 400,
+        description: `Bad request`,
+        schema: z.void(),
+      },
+      {
+        status: 404,
+        description: `Channel not found`,
+        schema: z.void(),
+      },
+      {
+        status: 500,
+        description: `Internal server error`,
+        schema: z.void(),
+      },
+    ],
+  },
+  {
+    method: "delete",
+    path: "/api/youtube/:guildId/channels/:channelId",
+    alias: "deleteApiyoutubeGuildIdchannelsChannelId",
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "guildId",
+        type: "Path",
+        schema: z.string(),
+      },
+      {
+        name: "channelId",
+        type: "Path",
+        schema: z.number().int(),
+      },
+    ],
+    response: z.void(),
+    errors: [
+      {
+        status: 404,
+        description: `Channel not found`,
+        schema: z.void(),
+      },
+      {
+        status: 500,
+        description: `Internal server error`,
+        schema: z.void(),
+      },
+    ],
+  },
+  {
+    method: "get",
+    path: "/api/youtube/search",
+    alias: "getApiyoutubesearch",
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "query",
+        type: "Query",
+        schema: z.string(),
+      },
+    ],
+    response: z.array(YouTubeSearchResultItem),
+    errors: [
+      {
+        status: 400,
+        description: `Bad request`,
+        schema: z.void(),
+      },
       {
         status: 500,
         description: `Internal server error`,
