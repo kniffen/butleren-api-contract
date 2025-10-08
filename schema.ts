@@ -247,7 +247,7 @@ const YouTubeChannelDBEntry = z
   })
   .strict()
   .passthrough();
-const SpotifyChannelDBEntry = SpotifyNotificationConfig.and(
+const SpotifyShowDBEntry = SpotifyNotificationConfig.and(
   z.object({ guildId: id }).strict().passthrough()
 );
 
@@ -282,7 +282,7 @@ export const schemas = {
   TwitchChannelDBEntry,
   KickChannelDBEntry,
   YouTubeChannelDBEntry,
-  SpotifyChannelDBEntry,
+  SpotifyShowDBEntry,
 };
 
 const endpoints = makeApi([

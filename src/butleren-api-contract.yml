@@ -685,8 +685,8 @@ components:
       $ref: "./components/spotify/SpotifyShow.yml#/SpotifyShow"
     SpotifyNotificationConfig:
       $ref: "./components/spotify/SpotifyNotificationConfig.yml#/SpotifyNotificationConfig"
-    SpotifyChannelDBEntry:
-      $ref: "./components/spotify/SpotifyChannelDBEntry.yml#/SpotifyChannelDBEntry"
+    SpotifyShowDBEntry:
+      $ref: "./components/spotify/SpotifyShowDBEntry.yml#/SpotifyShowDBEntry"
     SpotifySearchResultItem:
       $ref: "./components/spotify/SpotifySearchResultItem.yml#/SpotifySearchResultItem"
   parameters:

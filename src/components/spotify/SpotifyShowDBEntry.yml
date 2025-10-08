@@ -1,4 +1,4 @@
-SpotifyChannelDBEntry:
+SpotifyShowDBEntry:
   allOf:
     - $ref: './SpotifyNotificationConfig.yml#/SpotifyNotificationConfig'
     - type: object
