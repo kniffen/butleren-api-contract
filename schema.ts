@@ -240,15 +240,16 @@ const TwitchChannelDBEntry = TwitchNotificationConfig.and(
 const KickChannelDBEntry = KickNotificationConfig.and(
   z.object({ guildId: id }).strict().passthrough()
 );
-const YouTubeChannelDBEntry = YouTubeNotificationConfig.and(
-  z
-    .object({
-      guildId: id,
-      includeLiveStreams: z.union([z.literal(0), z.literal(1)]),
-    })
-    .strict()
-    .passthrough()
-);
+const YouTubeChannelDBEntry = z
+  .object({
+    channelId: z.string(),
+    guildId: id,
+    includeLiveStreams: z.union([z.literal(0), z.literal(1)]),
+    notificationChannelId: z.string(),
+    notificationRoleId: z.string().nullable(),
+  })
+  .strict()
+  .passthrough();
 const SpotifyShowDBEntry = SpotifyNotificationConfig.and(
   z.object({ guildId: id }).strict().passthrough()
 );
