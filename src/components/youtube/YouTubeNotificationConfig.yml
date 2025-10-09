@@ -16,8 +16,11 @@ YouTubeNotificationConfig:
       example: "123456789012345678"
     notificationRoleId:
       type: string
+      nullable: true
       description: The discord role id for notifications
       example: "987654321098765432"
   required:
     - channelId
+    - includeLiveStreams
     - notificationChannelId
+    - notificationRoleId
