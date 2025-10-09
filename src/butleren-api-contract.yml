@@ -87,30 +87,7 @@ paths:
           description: Guild not found
         '500':
           description: Internal server error
-  /api/discord/{channelId}/chat:
-    post:
-      summary: Send a message to a channel
-      tags:
-        - Discord
-      parameters:
-        - $ref: "#/components/parameters/DiscordChannelId"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              $ref: "#/components/schemas/ChatRequestBody"
-      responses:
-        '204':
-          description: Message sent
-        '400':
-          description: Bad request
-        '404':
-          description: Channel not found
-        '500':
-          description: Internal server error
-
+ 
   # Users
   /api/users:
     get:

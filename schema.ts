@@ -36,10 +36,6 @@ const Guild = z
   })
   .strict()
   .passthrough();
-const ChatRequestBody = z
-  .object({ message: z.string() })
-  .strict()
-  .passthrough();
 const _0 = z
   .object({ lat: z.number(), lon: z.number() })
   .partial()
@@ -211,6 +207,10 @@ const SpotifySearchResultItem = z
 const GuildDBEntry = GuildSettings.and(
   z.object({ id: z.string() }).strict().passthrough()
 );
+const ChatRequestBody = z
+  .object({ message: z.string() })
+  .strict()
+  .passthrough();
 const UserDBEntry = z
   .object({ lat: z.number(), lon: z.number() })
   .partial()
@@ -257,7 +257,6 @@ const SpotifyShowDBEntry = SpotifyNotificationConfig.and(
 export const schemas = {
   GuildSettings,
   Guild,
-  ChatRequestBody,
   _0,
   User,
   LogEntry,
@@ -278,6 +277,7 @@ export const schemas = {
   SpotifyShow,
   SpotifySearchResultItem,
   GuildDBEntry,
+  ChatRequestBody,
   UserDBEntry,
   ModuleDBEntry,
   CommandDBEntry,
@@ -368,42 +368,6 @@ const endpoints = makeApi([
       {
         status: 404,
         description: `Command not found`,
-        schema: z.void(),
-      },
-      {
-        status: 500,
-        description: `Internal server error`,
-        schema: z.void(),
-      },
-    ],
-  },
-  {
-    method: "post",
-    path: "/api/discord/:channelId/chat",
-    alias: "postApidiscordChannelIdchat",
-    requestFormat: "json",
-    parameters: [
-      {
-        name: "body",
-        type: "Body",
-        schema: z.object({ message: z.string() }).strict().passthrough(),
-      },
-      {
-        name: "channelId",
-        type: "Path",
-        schema: z.string(),
-      },
-    ],
-    response: z.void(),
-    errors: [
-      {
-        status: 400,
-        description: `Bad request`,
-        schema: z.void(),
-      },
-      {
-        status: 404,
-        description: `Channel not found`,
         schema: z.void(),
       },
       {
