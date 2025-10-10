@@ -12,6 +12,8 @@ tags:
     description: User settings and preferences
   - name: Logging
     description: Log entry retrieval and management
+  - name: Search
+    description: Search across various services
   - name: Modules
     description: Module configuration and settings
   - name: Commands
@@ -130,6 +132,46 @@ paths:
                 items:
                   $ref: "#/components/schemas/LogEntry"
 
+  # Search
+  /api/search/{service}:
+    get:
+      summary: Search across services
+      tags:
+        - Search
+      parameters:
+        - name: service
+          example: "youtube"
+          in: path
+          required: true
+          schema:
+            type: string
+            enum:
+              - youtube
+              - kick
+              - twitch
+              - spotify
+          description: The service to search in
+        - name: query
+          example: "foobar"
+          in: query
+          required: true
+          schema:
+            type: string
+          description: The search query
+      responses:
+        '200':
+          description: A list of search results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SearchResult"
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+
   # Modules
   /api/modules/{guildId}:
     get:
@@ -244,7 +286,6 @@ paths:
           description: Command not found
         '500':
           description: Internal server error
-
 
   # Twitch
   /api/twitch/{guildId}/channels:
@@ -617,6 +658,9 @@ components:
     # Logs
     LogEntry:
       $ref: "./components/logs/LogEntry.yml#/LogEntry"
+    # Search
+    SearchResult:
+      $ref: "./components/search/SearchResult.yml#/SearchResult"
     # Modules
     Module:
       $ref: "./components/modules/Module.yml#/Module"

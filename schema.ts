@@ -55,6 +55,10 @@ const LogEntry = z
   })
   .strict()
   .passthrough();
+const SearchResult = z
+  .object({ id: z.string(), name: z.string(), imageURL: z.string() })
+  .strict()
+  .passthrough();
 const ModuleSettings = z
   .object({ isEnabled: z.boolean() })
   .strict()
@@ -257,6 +261,7 @@ export const schemas = {
   _0,
   User,
   LogEntry,
+  SearchResult,
   ModuleSettings,
   Module,
   Command,
@@ -621,6 +626,37 @@ const endpoints = makeApi([
       {
         status: 404,
         description: `Module not found`,
+        schema: z.void(),
+      },
+      {
+        status: 500,
+        description: `Internal server error`,
+        schema: z.void(),
+      },
+    ],
+  },
+  {
+    method: "get",
+    path: "/api/search/:service",
+    alias: "getApisearchService",
+    requestFormat: "json",
+    parameters: [
+      {
+        name: "service",
+        type: "Path",
+        schema: z.enum(["youtube", "kick", "twitch", "spotify"]),
+      },
+      {
+        name: "query",
+        type: "Query",
+        schema: z.string(),
+      },
+    ],
+    response: z.array(SearchResult),
+    errors: [
+      {
+        status: 400,
+        description: `Bad request`,
         schema: z.void(),
       },
       {
