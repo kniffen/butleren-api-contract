@@ -51,7 +51,6 @@ const LogEntry = z
     timestamp: z.string().datetime({ offset: true }),
     level: z.enum(["info", "warn", "error", "debug"]),
     service: z.string().optional(),
-    module: z.string().optional(),
     message: z.string(),
     rest: z.array(z.string()).optional(),
   })

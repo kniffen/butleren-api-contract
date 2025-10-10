@@ -20,10 +20,6 @@ LogEntry:
       type: string
       description: The service associated with the log entry.
       example: Database
-    module:
-      type: string
-      description: The module or sub-component that generated the log entry.
-      example: Discord
     message:
       type: string
       description: The message associated with the log entry.
