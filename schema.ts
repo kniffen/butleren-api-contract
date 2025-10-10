@@ -2,7 +2,7 @@ import { makeApi, Zodios, type ZodiosOptions } from "@zodios/core";
 import { z } from "zod";
 
 const GuildSettings = z
-  .object({ nickname: z.string().optional(), color: z.string() })
+  .object({ nickname: z.string().nullable(), color: z.string() })
   .strict()
   .passthrough();
 const Guild = z
@@ -37,8 +37,7 @@ const Guild = z
   .strict()
   .passthrough();
 const _0 = z
-  .object({ lat: z.number(), lon: z.number() })
-  .partial()
+  .object({ lat: z.number().nullable(), lon: z.number().nullable() })
   .strict()
   .passthrough();
 const User = z
@@ -87,7 +86,7 @@ const TwitchNotificationConfig = z
   .object({
     id: z.string(),
     notificationChannelId: z.string(),
-    notificationRoleId: z.string().optional(),
+    notificationRoleId: z.string().nullable(),
   })
   .strict()
   .passthrough();
@@ -122,7 +121,7 @@ const KickNotificationConfig = z
   .object({
     broadcasterUserId: z.number(),
     notificationChannelId: z.string(),
-    notificationRoleId: z.string().optional(),
+    notificationRoleId: z.string().nullable(),
   })
   .strict()
   .passthrough();
@@ -187,7 +186,7 @@ const SpotifyNotificationConfig = z
   .object({
     showId: z.string(),
     notificationChannelId: z.string(),
-    notificationRoleId: z.string().optional(),
+    notificationRoleId: z.string().nullable(),
   })
   .strict()
   .passthrough();
@@ -211,8 +210,7 @@ const ChatRequestBody = z
   .strict()
   .passthrough();
 const UserDBEntry = z
-  .object({ lat: z.number(), lon: z.number() })
-  .partial()
+  .object({ lat: z.number().nullable(), lon: z.number().nullable() })
   .strict()
   .passthrough()
   .and(z.object({ id: z.string() }).strict().passthrough());
