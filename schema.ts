@@ -104,23 +104,6 @@ const TwitchChannel = z
   })
   .strict()
   .passthrough();
-const TwitchSearchResultItem = z
-  .object({
-    id: z.string(),
-    broadcaster_login: z.string(),
-    display_name: z.string(),
-    broadcaster_language: z.string(),
-    game_id: z.string(),
-    game_name: z.string(),
-    is_live: z.boolean(),
-    thumbnail_url: z.string(),
-    title: z.string(),
-    started_at: z.string().datetime({ offset: true }),
-    tag_ids: z.array(z.string()),
-    tags: z.array(z.string()),
-  })
-  .strict()
-  .passthrough();
 const KickNotificationConfig = z
   .object({
     broadcasterUserId: z.number(),
@@ -136,32 +119,6 @@ const KickChannel = z
     description: z.string().optional(),
     url: z.string(),
     notificationConfig: KickNotificationConfig,
-  })
-  .strict()
-  .passthrough();
-const KickSearchResultItem = z
-  .object({
-    broadcaster_user_id: z.number(),
-    slug: z.string(),
-    channel_description: z.string(),
-    stream_title: z.string(),
-    banner_picture: z.string(),
-    category: z
-      .object({ id: z.string(), name: z.string(), thumbnail: z.string() })
-      .strict()
-      .passthrough(),
-    stream: z
-      .object({
-        url: z.string(),
-        is_live: z.boolean(),
-        is_mature: z.boolean(),
-        language: z.string(),
-        start_time: z.string().datetime({ offset: true }),
-        viewer_count: z.number().int(),
-        thumbnail: z.string(),
-      })
-      .strict()
-      .passthrough(),
   })
   .strict()
   .passthrough();
@@ -182,10 +139,6 @@ const YouTubeChannel = z
   })
   .strict()
   .passthrough();
-const YouTubeSearchResultItem = z
-  .object({ channelId: z.string(), name: z.string(), imageURL: z.string() })
-  .strict()
-  .passthrough();
 const SpotifyNotificationConfig = z
   .object({
     showId: z.string(),
@@ -200,10 +153,6 @@ const SpotifyShow = z
     name: z.string(),
     notificationConfig: SpotifyNotificationConfig,
   })
-  .strict()
-  .passthrough();
-const SpotifySearchResultItem = z
-  .object({ showId: z.string(), name: z.string(), imageURL: z.string() })
   .strict()
   .passthrough();
 const GuildDBEntry = GuildSettings.and(
@@ -268,16 +217,12 @@ export const schemas = {
   CommandSettings,
   TwitchNotificationConfig,
   TwitchChannel,
-  TwitchSearchResultItem,
   KickNotificationConfig,
   KickChannel,
-  KickSearchResultItem,
   YouTubeNotificationConfig,
   YouTubeChannel,
-  YouTubeSearchResultItem,
   SpotifyNotificationConfig,
   SpotifyShow,
-  SpotifySearchResultItem,
   GuildDBEntry,
   ChatRequestBody,
   UserDBEntry,
@@ -540,32 +485,6 @@ const endpoints = makeApi([
   },
   {
     method: "get",
-    path: "/api/kick/search",
-    alias: "getApikicksearch",
-    requestFormat: "json",
-    parameters: [
-      {
-        name: "query",
-        type: "Query",
-        schema: z.string(),
-      },
-    ],
-    response: z.array(KickSearchResultItem),
-    errors: [
-      {
-        status: 400,
-        description: `Bad request`,
-        schema: z.void(),
-      },
-      {
-        status: 500,
-        description: `Internal server error`,
-        schema: z.void(),
-      },
-    ],
-  },
-  {
-    method: "get",
     path: "/api/logs",
     alias: "getApilogs",
     requestFormat: "json",
@@ -756,32 +675,6 @@ const endpoints = makeApi([
   },
   {
     method: "get",
-    path: "/api/spotify/search",
-    alias: "getApispotifysearch",
-    requestFormat: "json",
-    parameters: [
-      {
-        name: "query",
-        type: "Query",
-        schema: z.string(),
-      },
-    ],
-    response: z.array(SpotifySearchResultItem),
-    errors: [
-      {
-        status: 400,
-        description: `Bad request`,
-        schema: z.void(),
-      },
-      {
-        status: 500,
-        description: `Internal server error`,
-        schema: z.void(),
-      },
-    ],
-  },
-  {
-    method: "get",
     path: "/api/twitch/:guildId/channels",
     alias: "getApitwitchGuildIdchannels",
     requestFormat: "json",
@@ -859,32 +752,6 @@ const endpoints = makeApi([
       {
         status: 404,
         description: `Channel not found`,
-        schema: z.void(),
-      },
-      {
-        status: 500,
-        description: `Internal server error`,
-        schema: z.void(),
-      },
-    ],
-  },
-  {
-    method: "get",
-    path: "/api/twitch/search",
-    alias: "getApitwitchsearch",
-    requestFormat: "json",
-    parameters: [
-      {
-        name: "query",
-        type: "Query",
-        schema: z.string(),
-      },
-    ],
-    response: z.array(TwitchSearchResultItem),
-    errors: [
-      {
-        status: 400,
-        description: `Bad request`,
         schema: z.void(),
       },
       {
@@ -987,32 +854,6 @@ const endpoints = makeApi([
       {
         status: 404,
         description: `Channel not found`,
-        schema: z.void(),
-      },
-      {
-        status: 500,
-        description: `Internal server error`,
-        schema: z.void(),
-      },
-    ],
-  },
-  {
-    method: "get",
-    path: "/api/youtube/search",
-    alias: "getApiyoutubesearch",
-    requestFormat: "json",
-    parameters: [
-      {
-        name: "query",
-        type: "Query",
-        schema: z.string(),
-      },
-    ],
-    response: z.array(YouTubeSearchResultItem),
-    errors: [
-      {
-        status: 400,
-        description: `Bad request`,
         schema: z.void(),
       },
       {

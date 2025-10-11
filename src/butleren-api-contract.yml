@@ -348,33 +348,7 @@ paths:
           description: Channel not found
         '500':
           description: Internal server error
-  /api/twitch/search:
-    get:
-      summary: Search for Twitch channels
-      tags:
-        - Twitch
-      parameters:
-        - name: query
-          example: "foobar"
-          in: query
-          required: true
-          schema:
-            type: string
-          description: The search query
-      responses:
-        '200':
-          description: A list of Twitch channels matching the search query
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/TwitchSearchResultItem"
-        '400':
-          description: Bad request
-        '500':
-          description: Internal server error
-
+  
   # Kick
   /api/kick/{guildId}/channels:
     get:
@@ -436,33 +410,7 @@ paths:
           description: Channel not found
         '500':
           description: Internal server error
-  /api/kick/search:
-    get:
-      summary: Search for Kick channels
-      tags:
-        - Kick
-      parameters:
-        - name: query
-          example: "foobar"
-          in: query
-          required: true
-          schema:
-            type: string
-          description: The search query
-      responses:
-        '200':
-          description: A list of Kick channels matching the search query
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/KickSearchResultItem"
-        '400':
-          description: Bad request
-        '500':
-          description: Internal server error
-
+ 
   # YouTube
   /api/youtube/{guildId}/channels:
     get:
@@ -524,33 +472,7 @@ paths:
           description: Channel not found
         '500':
           description: Internal server error
-  /api/youtube/search:
-    get:
-      summary: Search for YouTube channels
-      tags:
-        - YouTube
-      parameters:
-        - name: query
-          example: "foobar"
-          in: query
-          required: true
-          schema:
-            type: string
-          description: The search query
-      responses:
-        '200':
-          description: A list of YouTube channels matching the search query
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/YouTubeSearchResultItem"
-        '400':
-          description: Bad request
-        '500':
-          description: Internal server error
-
+  
   # Spotify
   /api/spotify/{guildId}/shows:
     get:
@@ -612,33 +534,7 @@ paths:
           description: Channel not found
         '500':
           description: Internal server error
-  /api/spotify/search:
-    get:
-      summary: Search for Spotify shows
-      tags:
-        - Spotify
-      parameters:
-        - name: query
-          example: "foobar"
-          in: query
-          required: true
-          schema:
-            type: string
-          description: The search query
-      responses:
-        '200':
-          description: A list of Spotify shows matching the search query
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/SpotifySearchResultItem"
-        '400':
-          description: Bad request
-        '500':
-          description: Internal server error
-
+  
 components:
   schemas:
     # Discord
@@ -679,8 +575,6 @@ components:
       $ref: "./components/twitch/TwitchChannel.yml#/TwitchChannel"
     TwitchChannelDBEntry:
       $ref: "./components/twitch/TwitchChannelDBEntry.yml#/TwitchChannelDBEntry"
-    TwitchSearchResultItem:
-      $ref: "./components/twitch/TwitchSearchResultItem.yml#/TwitchSearchResultItem"
     TwitchNotificationConfig:
       $ref: "./components/twitch/TwitchNotificationConfig.yml#/TwitchNotificationConfig"
     # Kick
@@ -690,8 +584,6 @@ components:
       $ref: "./components/kick/KickNotificationConfig.yml#/KickNotificationConfig"
     KickChannelDBEntry:
       $ref: "./components/kick/KickChannelDBEntry.yml#/KickChannelDBEntry"
-    KickSearchResultItem:
-      $ref: "./components/kick/KickSearchResultItem.yml#/KickSearchResultItem"
     # YouTube
     YouTubeChannel:
       $ref: "./components/youtube/YouTubeChannel.yml#/YouTubeChannel"
@@ -699,8 +591,6 @@ components:
       $ref: "./components/youtube/YouTubeNotificationConfig.yml#/YouTubeNotificationConfig"
     YouTubeChannelDBEntry:
       $ref: "./components/youtube/YouTubeChannelDBEntry.yml#/YouTubeChannelDBEntry"
-    YouTubeSearchResultItem:
-      $ref: "./components/youtube/YouTubeSearchResultItem.yml#/YouTubeSearchResultItem"
     # Spotify
     SpotifyShow:
       $ref: "./components/spotify/SpotifyShow.yml#/SpotifyShow"
@@ -708,8 +598,6 @@ components:
       $ref: "./components/spotify/SpotifyNotificationConfig.yml#/SpotifyNotificationConfig"
     SpotifyShowDBEntry:
       $ref: "./components/spotify/SpotifyShowDBEntry.yml#/SpotifyShowDBEntry"
-    SpotifySearchResultItem:
-      $ref: "./components/spotify/SpotifySearchResultItem.yml#/SpotifySearchResultItem"
   parameters:
     DiscordGuildId:
       $ref: "./components/parameters/DiscordGuildId.yml"
