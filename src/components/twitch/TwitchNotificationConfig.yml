@@ -3,6 +3,7 @@ TwitchNotificationConfig:
   properties:
     id:
       type: string
+      minLength: 1
       description: The unique id of the channel
       example: "67890"
     notificationChannelId:

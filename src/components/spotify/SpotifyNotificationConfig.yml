@@ -3,6 +3,7 @@ SpotifyNotificationConfig:
   properties:
     showId:
       type: string
+      minLength: 1
       description: The unique id of the show
       example: 5CfCWKI5pZ28U0uOzXkDHe
     notificationChannelId:

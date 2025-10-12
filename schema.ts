@@ -88,7 +88,7 @@ const CommandSettings = z
   .passthrough();
 const TwitchNotificationConfig = z
   .object({
-    id: z.string(),
+    id: z.string().min(1),
     notificationChannelId: z.string(),
     notificationRoleId: z.string().nullable(),
   })
@@ -106,7 +106,7 @@ const TwitchChannel = z
   .passthrough();
 const KickNotificationConfig = z
   .object({
-    broadcasterUserId: z.number(),
+    broadcasterUserId: z.number().gte(1),
     notificationChannelId: z.string(),
     notificationRoleId: z.string().nullable(),
   })
@@ -124,7 +124,7 @@ const KickChannel = z
   .passthrough();
 const YouTubeNotificationConfig = z
   .object({
-    channelId: z.string(),
+    channelId: z.string().min(1),
     includeLiveStreams: z.boolean().default(false),
     notificationChannelId: z.string(),
     notificationRoleId: z.string().nullable(),
@@ -141,7 +141,7 @@ const YouTubeChannel = z
   .passthrough();
 const SpotifyNotificationConfig = z
   .object({
-    showId: z.string(),
+    showId: z.string().min(1),
     notificationChannelId: z.string(),
     notificationRoleId: z.string().nullable(),
   })
