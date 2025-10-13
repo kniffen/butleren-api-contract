@@ -1,7 +1,7 @@
 {
   "name": "@kniffen/butleren-api-contract",
   "private": true,
-  "version": "3.0.1",
+  "version": "3.1.0",
   "main": "schema.ts",
   "scripts": {
     "validate-contract": "swagger-cli validate src/butleren-api-contract.yml",

@@ -128,6 +128,7 @@ const YouTubeNotificationConfig = z
     includeLiveStreams: z.boolean().default(false),
     notificationChannelId: z.string(),
     notificationRoleId: z.string().nullable(),
+    liveNotificationRoleId: z.string().nullable(),
   })
   .strict()
   .passthrough();
@@ -197,6 +198,7 @@ const YouTubeChannelDBEntry = z
     includeLiveStreams: z.union([z.literal(0), z.literal(1)]),
     notificationChannelId: z.string(),
     notificationRoleId: z.string().nullable(),
+    liveNotificationRoleId: z.string().nullable(),
   })
   .strict()
   .passthrough();

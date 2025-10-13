@@ -20,8 +20,14 @@ YouTubeNotificationConfig:
       nullable: true
       description: The discord role id for notifications
       example: "987654321098765432"
+    liveNotificationRoleId:
+      type: string
+      nullable: true
+      description: The discord role id for live stream notifications
+      example: "987654321098765432"
   required:
     - channelId
     - includeLiveStreams
     - notificationChannelId
     - notificationRoleId
+    - liveNotificationRoleId
