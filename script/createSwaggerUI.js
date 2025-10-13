@@ -7,9 +7,9 @@ if (!fs.existsSync(docsPath)) {
   fs.mkdirSync(docsPath, { recursive: true });
 }
 
-// Bundle the contract
-const contractPath = path.join(docsPath, 'openapi.yml');
-execSync(`swagger-cli bundle src/butleren-api-contract.yml -o ${contractPath}`, { stdio: 'inherit' });
+// Bundle the specification
+const specPath = path.join(docsPath, 'openapi.yml');
+execSync(`swagger-cli bundle src/butleren-api-specification.yml -o ${specPath}`, { stdio: 'inherit' });
 
 // Copy Swagger UI files
 const swaggerUIDist = path.dirname(require.resolve('swagger-ui-dist/package.json'));

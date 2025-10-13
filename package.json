@@ -1,11 +1,11 @@
 {
-  "name": "@kniffen/butleren-api-contract",
+  "name": "@kniffen/butleren-api-specification",
   "private": true,
-  "version": "3.1.0",
+  "version": "3.2.0",
   "main": "schema.ts",
   "scripts": {
-    "validate-contract": "swagger-cli validate src/butleren-api-contract.yml",
-    "build-schema": "openapi-zod-client src/butleren-api-contract.yml --output schema.ts --export-schemas --strict-objects",
+    "validate-spec": "swagger-cli validate src/butleren-api-specification.yml",
+    "build-schema": "openapi-zod-client src/butleren-api-specification.yml --output schema.ts --export-schemas --strict-objects",
     "postinstall": "npm run build-schema",
     "generate-api-docs": "node script/createSwaggerUI.js",
     "build": "npm run build-schema && npm run generate-api-docs"
